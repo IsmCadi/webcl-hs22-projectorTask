@@ -1,6 +1,6 @@
 import { ObservableList, Observable }                   from "../observable/observable.js";
 import { Attribute, LABEL }                             from "../presentationModel/presentationModel.js";
-import { personListItemProjector, personFormProjector } from "./personProjector.js";
+import { personListItemProjector, personFormProjector, personTableProjector } from "./personProjector.js";
 
 export { MasterController, MasterView, SelectionController, DetailView }
 
@@ -40,8 +40,11 @@ const MasterView = (masterController, selectionController, rootElement) => {
     const render = person =>
         personListItemProjector(masterController, selectionController, rootElement, person);
 
+    personTableProjector(masterController, selectionController, rootElement.querySelector("#masterTableContainer"));
+
     // binding
     masterController.onPersonAdd(render);
+
 };
 
 const NoPerson = (() => { // one time creation, singleton
