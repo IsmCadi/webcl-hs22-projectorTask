@@ -24,19 +24,17 @@ input[type=text]:focus {
     border-color:   orange;
     outline:        transparent none 0;
 }
-#masterContainer {
-    display:        grid;
-    grid-column-gap: 0.5em;
-    grid-template-columns: 1.7em auto auto;
-    margin-bottom:  0.5em ;
-}
 
-#masterTableContainer {
-    display:        grid;
-    grid-column-gap: 0.5em;
-    grid-template-columns: 1.7em auto auto;
+#masterContainer {
+    display:        table;
     margin-bottom:  0.5em ;
+    border: 1px solid;
 }
+td, th {
+    border: 1px solid;
+}
+tr:hover {background-color: yellow;}
+
 .detail-form {
     display:        grid;
     grid-column-gap: 0.5em;
@@ -58,4 +56,5 @@ input.invalid {
 }
 .selected {
     box-shadow: 0 0 0.2em gold;
+    background-color: darkgray;
 }
