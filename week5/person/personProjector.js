@@ -1,6 +1,12 @@
 import {VALUE, VALID, EDITABLE, LABEL} from "../presentationModel/presentationModel.js";
 
-export {personListItemProjector, personFormProjector, personTableProjector}
+export {
+    personListItemProjector,
+    personFormProjector,
+    personTableProjector,
+    personTableRowProjector,
+    personListProjector
+}
 
 const bindTextInput = (textAttr, inputElement) => {
     inputElement.oninput = _ => textAttr.setConvertedValue(inputElement.value);
@@ -32,9 +38,25 @@ const personTextProjector = textAttr => {
     return inputElement;
 };
 
-const personListItemProjector = (masterController, selectionController, rootElement, person) => {
-
+const personDeleteProjector = (masterController, person) => {
     const deleteButton = document.createElement("Button");
+    deleteButton.setAttribute("class", "delete");
+    deleteButton.innerHTML = "&times;";
+    deleteButton.onclick = _ => masterController.removePerson(person);
+    deleteButton.onclick = (_) => masterController.removePerson(person);
+    return deleteButton;
+};
+
+const personListProjector = (masterController, selectionController, rootElement) => {
+    const render = (person) => personListItemProjector(masterController, selectionController, rootElement, person);
+    masterController.onPersonAdd(render);
+}
+
+
+const personListItemProjector = (masterController, selectionController, rootElement, person) => {
+    const deleteButton = personDeleteProjector(masterController, person);
+
+    //const deleteButton = document.createElement("Button");
     deleteButton.setAttribute("class", "delete");
     deleteButton.innerHTML = "&times;";
     deleteButton.onclick = _ => masterController.removePerson(person);
@@ -67,19 +89,71 @@ const personListItemProjector = (masterController, selectionController, rootElem
 };
 
 const personTableProjector = (masterController, selectionController, rootElement) => {
-    const personTable = document.createElement("table");
-    personTable.classList.add("personMasterTable");
-    personTable.innerHTML =
+    const table = document.createElement("table");
+    table.classList.add("personMasterTable");
+    table.innerHTML =
         "<tr>" +
-            "<th>&nbsp;&nbsp;</th>" +
-            "<th>Firstname</th>" +
-            "<th>Lastname</th>" +
+        "<th>&nbsp;&nbsp;</th>" +
+        "<th>Firstname</th>" +
+        "<th>Lastname</th>" +
         "</tr>";
     const render = (person) => {
-        personTableProjector(masterController, selectionController, personTable, person)
-    }
-    rootElement.appendChild(personTable);
+        personTableRowProjector(masterController, selectionController, table, person)
+    };
+    rootElement.appendChild(table);
     masterController.onPersonAdd(render);
+};
+
+const personTableRowProjector = (masterController, selectionController, rootElement, person) => {
+    const deleteButton = personDeleteProjector(masterController, person);
+    const firstNameInputElement = personTextProjector(person.firstname);
+    const lastNameInputElement = personTextProjector(person.lastname);
+
+    const personTableRow = document.createElement("tr");
+    const deleteCell = document.createElement("td");
+    const firstNameCell = document.createElement("td");
+    const lastNameCell = document.createElement("td");
+
+    deleteCell.appendChild(deleteButton);
+    firstNameCell.appendChild(firstNameInputElement);
+    lastNameCell.appendChild(lastNameInputElement);
+
+    personTableRow.appendChild(deleteCell);
+    personTableRow.appendChild(firstNameCell);
+    personTableRow.appendChild(lastNameCell);
+
+    deleteButton.onfocus = (_) => selectionController.setSelectedPerson(person);
+    firstNameInputElement.onfocus = (_) => selectionController.setSelectedPerson(person);
+    lastNameInputElement.onfocus = (_) => selectionController.setSelectedPerson(person);
+
+
+    let isRemoved = false;
+    masterController.onPersonRemove((removedPerson) => {
+        if (!(removedPerson !== person)) isRemoved = true;
+    });
+
+    personTableRow.onclick = (_) => {
+        if (!isRemoved) {
+            selectionController.setSelectedPerson(person);
+        }
+    }
+
+    selectionController.onPersonSelected((selected) => {
+        if (selected === person) {
+            personTableRow.classList.add("selected");
+        } else {
+            personTableRow.classList.remove("selected");
+        }
+    });
+
+    masterController.onPersonRemove((removedPerson, removeMe) => {
+        if (removedPerson !== person) return;
+        rootElement.removeChild(personTableRow);
+        selectionController.clearSelection();
+        removeMe();
+    });
+
+    rootElement.appendChild(personTableRow);
 };
 
 const personFormProjector = (detailController, rootElement, person) => {
