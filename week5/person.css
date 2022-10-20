@@ -30,6 +30,13 @@ input[type=text]:focus {
     grid-template-columns: 1.7em auto auto;
     margin-bottom:  0.5em ;
 }
+
+#masterTableContainer {
+    display:        grid;
+    grid-column-gap: 0.5em;
+    grid-template-columns: 1.7em auto auto;
+    margin-bottom:  0.5em ;
+}
 .detail-form {
     display:        grid;
     grid-column-gap: 0.5em;
