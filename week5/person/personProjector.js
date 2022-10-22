@@ -1,11 +1,11 @@
 import {VALUE, VALID, EDITABLE, LABEL} from "../presentationModel/presentationModel.js";
 
 export {
-    personListItemProjector,
+    /*personListItemProjector*/
     personFormProjector,
     personTableProjector,
     personTableRowProjector,
-    personListProjector
+    /*personListProjector*/
 }
 
 const bindTextInput = (textAttr, inputElement) => {
@@ -38,58 +38,6 @@ const personTextProjector = textAttr => {
     return inputElement;
 };
 
-const personDeleteProjector = (masterController, person) => {
-    const deleteButton = document.createElement("Button");
-    deleteButton.setAttribute("class", "delete");
-    deleteButton.innerHTML = "&times;";
-    deleteButton.onclick = _ => masterController.removePerson(person);
-    deleteButton.onclick = (_) => masterController.removePerson(person);
-    return deleteButton;
-};
-
-const personListProjector = (masterController, selectionController, rootElement) => {
-    const render = (person) => personListItemProjector(masterController, selectionController, rootElement, person);
-    masterController.onPersonAdd(render);
-}
-
-
-const personListItemProjector = (masterController, selectionController, rootElement, person) => {
-    //const deleteButton = personDeleteProjector(masterController, person);
-
-    const deleteButton = document.createElement("Button");
-    deleteButton.setAttribute("class", "delete");
-    deleteButton.innerHTML = "&times;";
-    deleteButton.onclick = _ => masterController.removePerson(person);
-
-    deleteButton.onclick = (_) => masterController.removePerson(person);
-
-    const firstnameInputElement = personTextProjector(person.firstname);
-    const lastnameInputElement = personTextProjector(person.lastname);
-
-    firstnameInputElement.onfocus = _ => selectionController.setSelectedPerson(person);
-    lastnameInputElement.onfocus = _ => selectionController.setSelectedPerson(person);
-
-    selectionController.onPersonSelected(
-        selected => selected === person
-            ? deleteButton.classList.add("selected")
-            : deleteButton.classList.remove("selected")
-    );
-
-    masterController.onPersonRemove((removedPerson, removeMe) => {
-        if (removedPerson !== person) return;
-        rootElement.removeChild(deleteButton);
-        rootElement.removeChild(firstnameInputElement);
-        rootElement.removeChild(lastnameInputElement);
-        selectionController.clearSelection();
-        removeMe();
-    });
-
-    rootElement.appendChild(deleteButton);
-    rootElement.appendChild(firstnameInputElement);
-    rootElement.appendChild(lastnameInputElement);
-    selectionController.setSelectedPerson(person);
-};
-
 const personTableProjector = (masterController, selectionController, rootElement) => {
     const table = document.createElement("table");
     table.classList.add("personMasterTable");
@@ -107,7 +55,13 @@ const personTableProjector = (masterController, selectionController, rootElement
 };
 
 const personTableRowProjector = (masterController, selectionController, rootElement, person) => {
-    const deleteButton = personDeleteProjector(masterController, person);
+
+    const deleteButton = document.createElement("Button");
+    deleteButton.setAttribute("class", "delete");
+    deleteButton.innerHTML = "&times;";
+    deleteButton.onclick = _ => masterController.removePerson(person);
+    deleteButton.onclick = (_) => masterController.removePerson(person);
+
     const firstNameInputElement = personTextProjector(person.firstname);
     const lastNameInputElement = personTextProjector(person.lastname);
 
@@ -127,7 +81,6 @@ const personTableRowProjector = (masterController, selectionController, rootElem
     deleteButton.onfocus = (_) => selectionController.setSelectedPerson(person);
     firstNameInputElement.onfocus = (_) => selectionController.setSelectedPerson(person);
     lastNameInputElement.onfocus = (_) => selectionController.setSelectedPerson(person);
-
 
     let isRemoved = false;
     masterController.onPersonRemove((removedPerson) => {
