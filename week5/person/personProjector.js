@@ -54,12 +54,14 @@ const personListProjector = (masterController, selectionController, rootElement)
 
 
 const personListItemProjector = (masterController, selectionController, rootElement, person) => {
-    const deleteButton = personDeleteProjector(masterController, person);
+    //const deleteButton = personDeleteProjector(masterController, person);
 
-    //const deleteButton = document.createElement("Button");
+    const deleteButton = document.createElement("Button");
     deleteButton.setAttribute("class", "delete");
     deleteButton.innerHTML = "&times;";
     deleteButton.onclick = _ => masterController.removePerson(person);
+
+    deleteButton.onclick = (_) => masterController.removePerson(person);
 
     const firstnameInputElement = personTextProjector(person.firstname);
     const lastnameInputElement = personTextProjector(person.lastname);
@@ -93,7 +95,7 @@ const personTableProjector = (masterController, selectionController, rootElement
     table.classList.add("personMasterTable");
     table.innerHTML =
         "<tr>" +
-        "<th>&nbsp;&nbsp;</th>" +
+        "<th><button id=\"plus\" autofocus> + </button></th>" +
         "<th>Firstname</th>" +
         "<th>Lastname</th>" +
         "</tr>";

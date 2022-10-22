@@ -43,7 +43,7 @@ tr:hover {background-color: yellow;}
 }
 #plus {
     position: relative;
-    top: -1em;
+    top: 0em;
 }
 .delete {
     background-color: transparent;
